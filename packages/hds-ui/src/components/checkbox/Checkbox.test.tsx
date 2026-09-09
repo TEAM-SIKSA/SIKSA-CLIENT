@@ -78,7 +78,7 @@ describe('Checkbox', () => {
       'group-active:bg-cool-gray-300',
       'peer-checked:text-cool-gray-900',
     )
-    expect(icon).toHaveClass('h-[9.5px]', 'w-[10px]')
+    expect(icon).toHaveClass('h-[26px]', 'w-[26px]')
   })
 
   it('keeps disabled checkbox from applying hover and pressed visuals', () => {

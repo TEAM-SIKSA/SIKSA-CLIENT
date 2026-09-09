@@ -37,7 +37,7 @@ export const Checkbox = ({
       >
         <CheckIcon
           aria-hidden="true"
-          className="h-[9.5px] w-[10px]"
+          className="h-[26px] w-[26px]"
           focusable="false"
         />
       </span>

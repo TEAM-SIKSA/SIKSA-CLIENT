@@ -82,7 +82,8 @@ Exported types:
 ## Styling
 
 - box size: `26px * 26px`
-- icon size: `10px * 9.5px`
+- icon canvas size: `26px * 26px`
+- check vector size: SVG viewBox 내부 기준 약 `10px * 9.5px`
 - radius: `3px`
 - rest background: `bg-cool-gray-100`
 - hover background: `group-hover:bg-cool-gray-200`
@@ -92,7 +93,7 @@ Exported types:
 - disabled: `cursor-not-allowed`
 - focus-visible: native input focus를 `peer-focus-visible` outline으로 visual box에 표시합니다.
 
-Figma Dev Mode의 `2.6rem` 값은 사용하지 않고 px 기준 `h-[26px] w-[26px]`를 사용합니다. `CheckIcon`은 `@hashi/hds-icons`에서 import하고, Figma의 check vector 크기에 맞춰 `h-[9.5px] w-[10px]`로 렌더링합니다.
+Figma Dev Mode의 `2.6rem` 값은 사용하지 않고 px 기준 `h-[26px] w-[26px]`를 사용합니다. `CheckIcon`은 `@hashi/hds-icons`에서 import합니다. `CheckIcon`의 SVG viewBox가 `0 0 26 26`이고 path 자체가 Figma의 check vector 크기를 가지므로, SVG 전체를 `26px * 26px`로 렌더링해 내부 check path가 의도한 크기로 보이게 합니다.
 
 ## Accessibility
 
