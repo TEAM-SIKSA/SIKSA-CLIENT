@@ -1,5 +1,5 @@
 import { PencilIcon } from '@hashi/hds-icons'
-import { Button, Chip, CollapsibleText, StarRating } from '@hashi/hds-ui'
+import { Button, Chip, ExpandableText, StarRating } from '@hashi/hds-ui'
 import type { CSSProperties, Ref } from 'react'
 
 import { ReviewKeywordBadge } from '@/features/review/components'
@@ -249,7 +249,7 @@ export const RestaurantReviewSection = ({
                       {review.date}
                     </time>
                   </div>
-                  <CollapsibleText
+                  <ExpandableText
                     className="[&_p]:typo-long-body-1 [&_p]:text-primary-200 [&_button]:text-cool-gray-600"
                     text={review.content}
                   />
