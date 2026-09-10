@@ -98,7 +98,7 @@ Tabs:
 
 - width: `100%`
 - height: `50px`
-- padding: horizontal `20px`
+- horizontal padding: none; App 또는 page layout이 담당합니다.
 - alignment: bottom
 - background: `white`
 
@@ -114,7 +114,7 @@ Selected indicator:
 - position: bottom
 - height: `2px`
 - color: `primary-200`
-- width: selected tab width inside horizontal padding
+- width: selected tab width
 - animation: `transform 200ms ease-out`
 - reduced motion: `prefers-reduced-motion: reduce`에서는 transition을 제거합니다.
 

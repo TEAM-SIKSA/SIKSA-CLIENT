@@ -21,7 +21,7 @@ const tabButtonClassName =
   'flex min-w-0 flex-1 items-center justify-center gap-1 border-b border-warm-gray-100 py-2.5'
 
 const tabIndicatorClassName =
-  'bg-primary-200 pointer-events-none absolute bottom-0 left-5 z-raised h-0.5 transition-transform duration-200 ease-out motion-reduce:transition-none'
+  'bg-primary-200 pointer-events-none absolute bottom-0 left-0 z-raised h-0.5 transition-transform duration-200 ease-out motion-reduce:transition-none'
 
 const tabLabelVariants = cva(
   'truncate transition-colors duration-200 ease-out motion-reduce:transition-none',
@@ -48,7 +48,7 @@ const tabCountVariants = cva(
 )
 
 const getTabIndicatorStyle = (itemCount: number, selectedIndex: number) => ({
-  width: `calc((100% - 40px) / ${itemCount})`,
+  width: `calc(100% / ${itemCount})`,
   transform: `translateX(${Math.max(selectedIndex, 0) * 100}%)`,
 })
 
@@ -72,7 +72,7 @@ export const Tabs = ({
   return (
     <div
       className={cn(
-        'relative flex h-12.5 w-full items-end bg-white px-5',
+        'relative flex h-12.5 w-full items-end bg-white',
         className,
       )}
       {...props}

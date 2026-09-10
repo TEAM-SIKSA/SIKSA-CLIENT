@@ -52,8 +52,8 @@ describe('Tabs', () => {
       'relative',
       'h-12.5',
       'items-end',
-      'px-5',
     )
+    expect(screen.getByRole('tablist')).not.toHaveClass('px-5')
     expect(screen.getByRole('tab', { name: '작성한 리뷰 4' })).toHaveClass(
       'border-warm-gray-100',
       'py-2.5',
@@ -86,8 +86,9 @@ describe('Tabs', () => {
       'transition-transform',
       'motion-reduce:transition-none',
     )
+    expect(indicator).not.toHaveClass('left-5')
     expect(indicator).toHaveStyle({
-      width: `calc((100% - 40px) / ${items.length})`,
+      width: `calc(100% / ${items.length})`,
       transform: 'translateX(100%)',
     })
   })
