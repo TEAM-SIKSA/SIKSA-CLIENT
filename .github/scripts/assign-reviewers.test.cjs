@@ -16,7 +16,7 @@ const {
 
 const createConfig = () => ({
   lookbackDays: 30,
-  requiredReviewerCount: 2,
+  requiredReviewerCount: 1,
   reviewers: [
     { enabled: true, login: 'jyeon03', weight: 1 },
     { enabled: true, login: 'chungyo', weight: 1 },
@@ -25,14 +25,28 @@ const createConfig = () => ({
   ],
 })
 
-test('validateReviewerConfig requires exactly 2 reviewers', () => {
+test('validateReviewerConfig requires at least 1 reviewer', () => {
   const config = createConfig()
 
   assert.doesNotThrow(() => validateReviewerConfig(config))
 
   assert.throws(
-    () => validateReviewerConfig({ ...config, requiredReviewerCount: 3 }),
-    /requiredReviewerCount must be 2/,
+    () => validateReviewerConfig({ ...config, requiredReviewerCount: 0 }),
+    /requiredReviewerCount must be a positive integer/,
+  )
+})
+
+test('validateReviewerConfig keeps enough enabled reviewers after excluding the author', () => {
+  const config = createConfig()
+
+  config.reviewers = [
+    { enabled: true, login: 'jyeon03', weight: 1 },
+    { enabled: false, login: 'chungyo', weight: 1 },
+  ]
+
+  assert.throws(
+    () => validateReviewerConfig(config),
+    /At least 2 enabled reviewers are required to assign 1 reviewer while excluding the PR author/,
   )
 })
 
@@ -128,7 +142,7 @@ test('collectReviewStats counts only reviews submitted within the lookback windo
   assert.equal(reviewStats.has('external-reviewer'), false)
 })
 
-test('selectReviewers excludes the PR author and always returns 2 reviewers', () => {
+test('selectReviewers excludes the PR author and returns the configured number of reviewers', () => {
   const config = createConfig()
   const reviewStats = createInitialReviewStats(config.reviewers)
 
@@ -139,7 +153,7 @@ test('selectReviewers excludes the PR author and always returns 2 reviewers', ()
     reviewStats,
   })
 
-  assert.equal(reviewers.length, 2)
+  assert.equal(reviewers.length, 1)
   assert.ok(!reviewers.includes('jyeon03'))
 })
 
@@ -159,7 +173,7 @@ test('selectReviewers prefers reviewers with fewer recent reviews and assignment
     reviewStats,
   })
 
-  assert.deepEqual(new Set(reviewers), new Set(['chungyo', 'gyeongbibin']))
+  assert.deepEqual(reviewers, ['chungyo'])
 })
 
 test('selectReviewers ignores disabled reviewers', () => {
@@ -177,7 +191,7 @@ test('selectReviewers ignores disabled reviewers', () => {
     reviewStats,
   })
 
-  assert.equal(reviewers.length, 2)
+  assert.equal(reviewers.length, 1)
   assert.ok(!reviewers.includes('yurimidaH'))
 })
 
