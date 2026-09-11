@@ -1,5 +1,7 @@
 export { Avatar } from './avatar'
 export type { AvatarProps, AvatarSize } from './avatar'
+export { Accordion } from './accordion'
+export type { AccordionProps } from './accordion'
 export { Button } from './button'
 export type {
   ButtonProps,
