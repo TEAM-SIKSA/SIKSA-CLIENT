@@ -10,8 +10,8 @@
 
 ## Reviewers
 
-- 모든 client PR에는 작성자를 제외한 리뷰어 2명을 지정합니다.
-- 기본 승인 기준은 2명 이상의 approve입니다. 추가 전문 리뷰가 필요하면 리뷰어를 더 지정할 수 있습니다.
+- 모든 client PR에는 작성자를 제외한 리뷰어 1명을 지정합니다.
+- 기본 승인 기준은 1명 이상의 approve입니다. 추가 전문 리뷰가 필요하면 리뷰어를 더 지정할 수 있습니다.
 - 리뷰어는 단순 approve를 위한 역할이 아니라, 구현 의도·상태·구조를 이해하고 피드백하는 책임을 가집니다.
 - 작성자는 PR의 `상세 설명`, `고민한 부분`, `리뷰어에게`를 통해 리뷰 시작에 필요한 맥락을 제공합니다.
 
@@ -23,7 +23,7 @@
 2. 최근 30일 동안 GitHub API가 반환한 reviewer 요청과 제출 review를 집계합니다.
 3. `(요청 횟수 + review 횟수) / weight`가 낮은 후보를 우선합니다.
 4. 점수가 같으면 PR 번호와 GitHub login을 사용한 결정적 순서로 정렬합니다.
-5. 정렬 결과에서 2명을 선택해 reviewer로 요청합니다.
+5. 정렬 결과에서 1명을 선택해 reviewer로 요청합니다.
 
 reviewer roster, 조회 기간, 배정 인원, 활성화 여부, 가중치는 `.github/reviewer-assignment.json`에서 관리합니다.
 
@@ -59,7 +59,7 @@ P1은 merge를 막는 blocking issue입니다. P2부터 P5는 우선순위만으
 
 ## Automation Scope
 
-`.github/workflows/auto-assign-author.yml`은 PR 작성자를 assignee로 등록하고, `.github/workflows/auto-assign-reviewers.yml`은 draft가 아닌 PR에 리뷰어 2명을 자동 요청합니다.
+`.github/workflows/auto-assign-author.yml`은 PR 작성자를 assignee로 등록하고, `.github/workflows/auto-assign-reviewers.yml`은 draft가 아닌 PR에 리뷰어 1명을 자동 요청합니다.
 
 - reviewer 자동 요청은 PR이 `opened`, `ready_for_review`, `reopened` 상태가 될 때 실행합니다.
 - 연속 배정 회피, 개인 일정, 변경 영역별 전문성은 자동으로 판단하지 않습니다.

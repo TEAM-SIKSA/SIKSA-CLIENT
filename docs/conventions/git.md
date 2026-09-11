@@ -8,7 +8,7 @@ HASHI Client는 Jira로 작업을 관리하고 GitHub로 코드 리뷰와 병합
 2. Jira 티켓 번호를 기준으로 브랜치를 생성합니다.
 3. 작업 브랜치에서 개발합니다.
 4. 작업이 끝나면 `develop` 브랜치로 PR을 생성합니다.
-5. 최소 2명 이상의 approve를 받은 뒤 merge합니다.
+5. 최소 1명 이상의 approve를 받은 뒤 merge합니다.
 6. merge된 브랜치는 삭제합니다.
 
 ## 역할 분리
@@ -150,7 +150,7 @@ Refactor(auth): 인증 로직 분리
 Style(input): Input 컴포넌트 스타일 수정
 ```
 
-PR 본문은 `.github/pull_request_template.md`를 기준으로 작성하고, 관련 Jira 티켓 번호를 명시합니다. `apps/client/**` PR은 `docs/workflows/testing.md`의 테스트 근거와 `docs/workflows/code-review.md`의 리뷰어 2명 지정 기준을 함께 따릅니다.
+PR 본문은 `.github/pull_request_template.md`를 기준으로 작성하고, 관련 Jira 티켓 번호를 명시합니다. `apps/client/**` PR은 `docs/workflows/testing.md`의 테스트 근거와 `docs/workflows/code-review.md`의 리뷰어 1명 지정 기준을 함께 따릅니다.
 
 ```markdown
 ## 📌 요약
