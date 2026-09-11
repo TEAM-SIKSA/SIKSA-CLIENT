@@ -14,7 +14,7 @@ PR을 열기 전 변경 범위, Jira 연결, 검증 결과를 명확히 남깁�
 - 구현 기준 spec이 필요한 작업이면 [Spec Writing](./spec-writing.md)에 따라 `*.spec.md`를 작성하거나 갱신합니다.
 - `apps/client/**` 코드 변경은 [Client Testing Policy](./testing.md)에 따라 `Test Required`와 `Test Optional`을 구분합니다. `Test Required`는 자동 테스트를 준비하고, 테스트를 생략할 때는 생략 사유와 수동 확인 근거를 함께 준비합니다.
 - 문서 영향이 있는 변경이면 `README.md`, `AGENTS.md`, `docs/` 문서 갱신 여부를 확인합니다.
-- `apps/client/**` PR은 [Client Code Review Policy](./code-review.md)에 따라 작성자를 제외한 리뷰어 2명을 지정합니다.
+- `apps/client/**` PR은 [Client Code Review Policy](./code-review.md)에 따라 작성자를 제외한 리뷰어 1명을 지정합니다.
 
 ## PR Body
 
@@ -176,7 +176,7 @@ UI 변경:
 
 ## Before Merge
 
-- 최소 2명 이상의 approve를 받습니다.
-- `apps/client/**` PR은 [Client Code Review Policy](./code-review.md)에 따라 지정된 2명의 리뷰어가 리뷰했는지 확인합니다.
+- 최소 1명 이상의 approve를 받습니다.
+- `apps/client/**` PR은 [Client Code Review Policy](./code-review.md)에 따라 지정된 리뷰어 1명이 리뷰했는지 확인합니다.
 - 필요한 경우 Jira 상태가 `QA` 또는 `CODE REVIEW`에 있는지 확인합니다.
 - PR 병합 후 브랜치를 삭제합니다.
