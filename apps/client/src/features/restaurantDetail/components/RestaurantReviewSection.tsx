@@ -5,12 +5,12 @@ import {
   Chip,
   CollapsibleText,
   StarRating,
+  Thumbnail,
 } from '@hashi/hds-ui'
 import type { CSSProperties, Ref } from 'react'
 
 import { ReviewKeywordBadge } from '@/features/review/components'
 import graphicBillUrl from '@/features/restaurantDetail/assets/graphic-bill.svg'
-import { RestaurantImage } from '@/features/restaurantDetail/components/RestaurantImage'
 import { RestaurantReviewListSkeleton } from '@/features/restaurantDetail/components/RestaurantReviewListSkeleton'
 import {
   RATING_DISTRIBUTION,
@@ -274,12 +274,7 @@ export const RestaurantReviewSection = ({
                         onClick={handleClick}
                         type="button"
                       >
-                        <RestaurantImage
-                          className="size-full object-cover"
-                          defaultImageTestId="restaurant-review-default-image"
-                          logoSize="md"
-                          src={imageUrl}
-                        />
+                        <Thumbnail alt="" size="lg" src={imageUrl} />
                       </button>
                     )
                   })}
