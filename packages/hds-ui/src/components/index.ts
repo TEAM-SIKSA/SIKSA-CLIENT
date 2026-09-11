@@ -73,3 +73,6 @@ export type {
 } from './carousel'
 export { Calendar } from './calendar'
 export type { CalendarProps } from './calendar'
+
+export { Banner } from './banner'
+export type { BannerProps } from './banner'
