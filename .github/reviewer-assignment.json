@@ -1,6 +1,6 @@
 {
   "lookbackDays": 30,
-  "requiredReviewerCount": 2,
+  "requiredReviewerCount": 1,
   "reviewers": [
     {
       "enabled": true,
