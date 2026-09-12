@@ -14,14 +14,48 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+  TURBO_SCM_HEAD: ${{ github.sha }}
+
 jobs:
-  format:
-    name: Format Check
+  quality:
+    name: Quality & Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Quality Scope
+        id: quality-scope
+        shell: bash
+        run: |
+          if ! git cat-file -e "${TURBO_SCM_BASE}^{commit}" 2>/dev/null ||
+            ! git cat-file -e "${TURBO_SCM_HEAD}^{commit}" 2>/dev/null; then
+            echo "turbo_args=" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          if git diff --quiet "${TURBO_SCM_BASE}" "${TURBO_SCM_HEAD}" -- \
+            .github/workflows/ci.yml \
+            eslint.config.js \
+            package.json \
+            pnpm-lock.yaml \
+            pnpm-workspace.yaml \
+            turbo.json; then
+            echo "turbo_args=--affected" >> "${GITHUB_OUTPUT}"
+          else
+            diff_status=$?
+
+            if [ "${diff_status}" -eq 1 ]; then
+              echo "turbo_args=" >> "${GITHUB_OUTPUT}"
+            else
+              exit "${diff_status}"
+            fi
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -38,94 +72,70 @@ jobs:
       - name: Format Check
         run: pnpm format:check
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Lint
-        run: pnpm lint
+        run: pnpm turbo lint ${{ steps.quality-scope.outputs.turbo_args }}
 
-  typecheck:
-    name: Typecheck
-    runs-on: ubuntu-latest
+      - name: Type Check
+        run: pnpm turbo typecheck ${{ steps.quality-scope.outputs.turbo_args }}
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Typecheck
-        run: pnpm typecheck
+      - name: Build
+        run: pnpm turbo build ${{ steps.quality-scope.outputs.turbo_args }}
 
   test:
-    name: Test
+    name: Client & HDS Tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect Test Scope
+        id: test-scope
+        shell: bash
+        run: |
+          if ! git cat-file -e "${TURBO_SCM_BASE}^{commit}" 2>/dev/null ||
+            ! git cat-file -e "${TURBO_SCM_HEAD}^{commit}" 2>/dev/null; then
+            echo "run=true" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          if git diff --quiet "${TURBO_SCM_BASE}" "${TURBO_SCM_HEAD}" -- \
+            .github/workflows/ci.yml \
+            apps/client \
+            configs \
+            package.json \
+            packages \
+            pnpm-lock.yaml \
+            pnpm-workspace.yaml \
+            turbo.json; then
+            echo "run=false" >> "${GITHUB_OUTPUT}"
+          else
+            diff_status=$?
+
+            if [ "${diff_status}" -eq 1 ]; then
+              echo "run=true" >> "${GITHUB_OUTPUT}"
+            else
+              exit "${diff_status}"
+            fi
+          fi
 
       - name: Setup pnpm
+        if: steps.test-scope.outputs.run == 'true'
         uses: pnpm/action-setup@v4
 
       - name: Setup Node
+        if: steps.test-scope.outputs.run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
 
       - name: Install Dependencies
+        if: steps.test-scope.outputs.run == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Test
+        if: steps.test-scope.outputs.run == 'true'
         run: pnpm test
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build
