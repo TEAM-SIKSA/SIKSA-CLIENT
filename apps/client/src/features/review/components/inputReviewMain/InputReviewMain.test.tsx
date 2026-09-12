@@ -136,9 +136,10 @@ describe('InputReviewMain', () => {
 
     expect(handlePhotoFilesChange).toHaveBeenCalledTimes(1)
     expect(handlePhotoFilesChange).toHaveBeenCalledWith([validImageFile])
-    expect(
-      screen.getByText('사진은 장당 5MB 이하로 첨부해주세요.'),
-    ).toHaveClass('text-primary-400')
+    expect(screen.getByText('용량이 초과되었어요.')).toHaveClass(
+      'typo-body-7',
+      'text-primary-400',
+    )
   })
 
   it('rejects unsupported photo MIME types and keeps supported files', () => {
@@ -160,7 +161,7 @@ describe('InputReviewMain', () => {
     expect(handlePhotoFilesChange).toHaveBeenCalledWith([supportedImageFile])
     expect(
       screen.getByText('JPG, PNG, WEBP 형식의 사진만 첨부할 수 있어요.'),
-    ).toHaveClass('text-primary-400')
+    ).toHaveClass('typo-body-7', 'text-primary-400')
   })
 
   it('appends newly selected photo files to existing photo files', () => {
@@ -218,7 +219,7 @@ describe('InputReviewMain', () => {
     ])
     expect(
       screen.getByText('사진은 최대 10장까지 첨부할 수 있어요.'),
-    ).toHaveClass('text-primary-400')
+    ).toHaveClass('typo-body-7', 'text-primary-400')
   })
 
   it('clears the max count error when a selected photo is removed', () => {
@@ -277,6 +278,12 @@ describe('InputReviewMain', () => {
 
     render(<InputReviewMain photoFiles={photoFiles} />)
 
+    const photoAddTrigger = screen.getByRole('button', {
+      name: '사진을 첨부해 주세요. (선택)',
+    })
+
+    expect(photoAddTrigger).toHaveClass('size-[130px]', 'rounded-[5px]')
+    expect(screen.queryByText('사진 추가')).not.toBeInTheDocument()
     expect(
       screen.getByRole('list', { name: '선택된 리뷰 사진 목록' }),
     ).toHaveClass(
@@ -293,7 +300,7 @@ describe('InputReviewMain', () => {
     ).toHaveAttribute('src', 'blob:review-1.png')
     expect(
       screen.getByRole('img', { name: 'review-1.png 미리보기' }),
-    ).toHaveClass('rounded-[10px]')
+    ).toHaveClass('rounded-[5px]')
     expect(
       screen.getByRole('img', { name: 'review-2.png 미리보기' }),
     ).toHaveAttribute('src', 'blob:review-2.png')
