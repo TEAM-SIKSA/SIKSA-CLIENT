@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ComponentProps } from 'react'
+import { SmileIcon } from '@hashi/hds-icons'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Chip } from './Chip'
@@ -7,6 +8,7 @@ import { Chip } from './Chip'
 type ChipPropsForStory = ComponentProps<typeof Chip>
 
 type ChipPreviewItem = {
+  count?: number
   value: string
   label: string
 }
@@ -27,6 +29,26 @@ const StatefulChip = (args: ChipPropsForStory) => {
   return <Chip {...args} selected={selected} onSelectedChange={setSelected} />
 }
 
+const DisabledSmileIcon = () => (
+  <svg
+    aria-hidden="true"
+    className="text-warm-gray-300 size-[1em]"
+    fill="none"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx={12} cy={12} r={9.3} stroke="currentColor" strokeWidth={1.4} />
+    <circle cx={9} cy={10} fill="currentColor" r={1} />
+    <circle cx={15} cy={10} fill="currentColor" r={1} />
+    <path
+      d="M8.5 14C8.5 14 9.375 16 12 16C14.625 16 15.5 14 15.5 14"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth={1.4}
+    />
+  </svg>
+)
+
 const ChipPreview = ({ initialValue, items }: ChipPreviewProps) => {
   const [value, setValue] = useState(initialValue)
 
@@ -37,6 +59,7 @@ const ChipPreview = ({ initialValue, items }: ChipPreviewProps) => {
 
         return (
           <Chip
+            count={item.count}
             key={item.value}
             selected={isSelected}
             onSelectedChange={(selected) => {
@@ -93,6 +116,7 @@ const meta = {
   tags: ['autodocs'],
   args: {
     children: '인기순',
+    count: undefined,
     selected: false,
   },
   argTypes: {
@@ -102,11 +126,24 @@ const meta = {
     className: {
       control: false,
     },
+    count: {
+      control: 'number',
+    },
+    disabledIcon: {
+      control: false,
+    },
+    icon: {
+      control: false,
+    },
     onSelectedChange: {
       control: false,
     },
     selected: {
       control: 'boolean',
+    },
+    variant: {
+      control: 'select',
+      options: ['basic', 'icon'],
     },
   },
 } satisfies Meta<typeof Chip>
@@ -119,6 +156,21 @@ export const Default: Story = {}
 
 export const Selected: Story = {
   args: {
+    selected: true,
+  },
+}
+
+export const WithCount: Story = {
+  args: {
+    children: '지역별',
+    count: 12,
+  },
+}
+
+export const SelectedWithCount: Story = {
+  args: {
+    children: '지역별',
+    count: 12,
     selected: true,
   },
 }
@@ -137,6 +189,7 @@ export const SelectedFilterToggle: Story = {
 export const LongText: Story = {
   args: {
     children: '아주 긴 칩 라벨이 들어왔을 때 말줄임 처리가 되는 상태',
+    count: 99,
     selected: true,
   },
   decorators: [
@@ -148,9 +201,51 @@ export const LongText: Story = {
   ],
 }
 
+export const Icon: Story = {
+  args: {
+    children: '친절해요',
+    icon: <SmileIcon />,
+    variant: 'icon',
+  },
+}
+
+export const IconSelected: Story = {
+  args: {
+    children: '친절해요',
+    icon: <SmileIcon />,
+    selected: true,
+    variant: 'icon',
+  },
+}
+
+export const IconToggle: Story = {
+  args: {
+    children: '친절해요',
+    icon: <SmileIcon />,
+    variant: 'icon',
+  },
+  render: StatefulChip,
+}
+
+export const IconDisabled: Story = {
+  args: {
+    children: '친절해요',
+    disabled: true,
+    disabledIcon: <DisabledSmileIcon />,
+    icon: <SmileIcon />,
+    variant: 'icon',
+  },
+}
+
 export const FilterCategoryCases: Story = {
   render: () => (
-    <ChipSinglePreview initialValue="popular" items={categoryItems} />
+    <ChipSinglePreview
+      initialValue="popular"
+      items={categoryItems.map((item, index) => ({
+        ...item,
+        count: index + 1,
+      }))}
+    />
   ),
 }
 
