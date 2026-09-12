@@ -23,13 +23,24 @@ const shareAction = (
   </IconButton>
 )
 
+const textAction = (
+  <button
+    className="typo-body-6 text-primary-200 h-[35px] w-[45px]"
+    type="button"
+  >
+    저장
+  </button>
+)
+
 const meta = {
   title: 'Components/Header',
   component: Header,
   tags: ['autodocs'],
   decorators: [mobileFrameDecorator],
   args: {
+    elevated: true,
     leftAction: backAction,
+    rightActionType: 'icon',
     title: '예약 상세',
     variant: 'center',
   },
@@ -40,11 +51,18 @@ const meta = {
     contentClassName: {
       control: false,
     },
+    elevated: {
+      control: 'boolean',
+    },
     leftAction: {
       control: false,
     },
     rightAction: {
       control: false,
+    },
+    rightActionType: {
+      control: 'select',
+      options: ['icon', 'text'],
     },
     subtitle: {
       control: 'text',
@@ -70,6 +88,30 @@ export const WithRightAction: Story = {
     rightAction: shareAction,
     title: '오늘의 식당',
   },
+}
+
+export const WithTextAction: Story = {
+  args: {
+    elevated: false,
+    rightAction: textAction,
+    rightActionType: 'text',
+    title: '내 정보 수정',
+  },
+}
+
+export const TextActionOverflow: Story = {
+  args: {
+    rightAction: textAction,
+    rightActionType: 'text',
+    title: '개인정보 및 알림 설정 변경',
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-[320px]">
+        <Story />
+      </div>
+    ),
+  ],
 }
 
 export const TitleOnly: Story = {

@@ -23,7 +23,11 @@ export type { InputFieldProps } from './inputField'
 export { StarRating } from './starRating'
 export type { StarRatingProps, StarRatingSize } from './starRating'
 export { Header } from './header'
-export type { HeaderProps, HeaderVariant } from './header'
+export type {
+  HeaderProps,
+  HeaderRightActionType,
+  HeaderVariant,
+} from './header'
 export { SearchField } from './searchField'
 export type { SearchFieldProps } from './searchField'
 export { BottomSheet } from './bottomSheet'

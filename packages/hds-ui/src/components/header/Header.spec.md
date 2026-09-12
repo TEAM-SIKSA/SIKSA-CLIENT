@@ -1,6 +1,6 @@
 # Component Spec: `Header`
 
-Jira: HASHI-60
+Jira: HASHI-189
 
 ## Purpose
 
@@ -16,37 +16,19 @@ HDS에서는 **상단바 visual structure, 제목/보조 텍스트 layout, 좌�
 
 ## Figma Reference
 
-Figma: `Hashi_작업방 / Components / Common_Components`
+Figma: `Hashi.kr / Basic·complex / 빨간 테두리 컴포넌트 범위`
 
 아래 width 값은 Figma가 배치된 모바일 기준 프레임의 관측값입니다. `Header` 구현은 `393px` 또는 `394px` 고정 width를 소유하지 않고, 부모 모바일 뷰포트에 맞춰 항상 `w-full`로 렌더링합니다.
 
-- `topbar_restaurant_info`
-  - reference frame: `393px x 75px`
-  - title: `식당 상세 정보`
-  - left: back icon `24px`
-  - right: share icon `24px`
-  - padding: `pt 33px`, `pb 18px`, `pl 13px`, `pr 20px`
-  - title style: `Sub Header 1`, `Primary_200`
-- `topbar_today_restaurant`
-  - same structure as `topbar_restaurant_info`
-  - title: `오늘의 식당`
-- `topbar_profile_creation`, `Topbar_magazine_title`, `topbar_write_review`, `Topbar_hot_restaurant`
-  - reference frame: `393-394px x 75px`
-  - left back icon only
-  - center title
-- `topbar_restaurant_name`
-  - reference frame: `393px x 97px`
-  - long title width: `272px`
-  - title style: `Header 2`, `Primary_200`
-  - left back icon, right share icon
-  - top aligned actions/title
-- `header_terms_detail`
-  - reference frame: `394px x 80px`
-  - base topbar plus centered secondary text
-  - secondary text example: `최종 업데이트: 2026. 06. 29`
-- `bar_search_back_button`
-  - back icon plus search field composition
-  - considered a composition of `IconButton` and `SearchField`, not `Header` v1 scope
+- red boundary: `7046:12752`
+- `Navigation Bar`: `6976:39752`
+  - `Right=None`: `393px x 75px`, centered `18px SemiBold` title
+  - `Right=Icon`: `393px x 75px`, left back icon and right share icon
+  - `Subtitle=On`: `393px x 75px`, `18px` title and `12px/18px` subtitle
+  - `Right=Text`: `393px x 75px`, right `45px x 35px` Ghost action
+  - `Restaurant name`: `393px x 77px`, `22px SemiBold` title with `272px` single-line area
+
+빨간 테두리 안에 함께 배치된 `Icon=Close`, Basic의 하단 `Navigation`, complex의 `Bottom bar`는 `Header` 범위에서 제외합니다. `Icon=Close`의 `344px x 24px` 구조는 이번 Header public API에 추가하지 않으며, 따라서 `size="sm"`도 추가하지 않습니다.
 
 ## Figma 판단
 
@@ -56,13 +38,16 @@ Figma: `Hashi_작업방 / Components / Common_Components`
 - title centered layout
 - optional left action slot
 - optional right action slot
-- long title layout for restaurant-like two-line title
+- right icon/text action layout
+- long title layout for a single-line restaurant title
 - optional subtitle/description below title for terms detail-like header
 - title/subtitle content supplied by caller
 
 `Header` v1에 포함하지 않는 패턴:
 
 - back/search bar combined layout
+- `Icon=Close` 24px title row
+- Basic `Navigation` and complex `Bottom bar`
 - actual back navigation
 - actual share behavior
 - route, link, query string, WebView bridge dependency
@@ -84,8 +69,10 @@ Figma: `Hashi_작업방 / Components / Common_Components`
 - [x] action slot에는 기존 `IconButton`과 `@hashi/hds-icons` 조합을 사용할 수 있습니다.
 - [x] `Header`는 `393px`/`394px` 고정 width를 소유하지 않고 부모 너비를 따릅니다.
 - [x] 기본 topbar 높이는 `75px`입니다.
-- [x] long title variant는 `97px` 높이를 사용합니다.
-- [x] `center` variant에서 subtitle이 있으면 `80px` 높이를 사용하고 title 아래 중앙에 렌더링합니다.
+- [x] long title variant는 `77px` 높이를 사용합니다.
+- [x] `center` variant에서 subtitle이 있어도 `75px` 높이를 유지하고 title 아래 중앙에 렌더링합니다.
+- [x] right text action을 위한 명시적인 배치 규칙을 제공합니다.
+- [x] 기본 elevation을 끌 수 있습니다.
 - [x] `className`을 내부 class와 병합합니다.
 
 ## UI Structure
@@ -124,7 +111,21 @@ Header
 
 - type: `React.ReactNode`
 - required: `false`
-- description: 오른쪽 액션 영역입니다. 공유 버튼이 필요한 화면에서는 호출부가 `IconButton size="xs"`와 `ShareIcon`을 조합해 전달합니다.
+- description: 오른쪽 액션 영역입니다. icon action은 호출부가 `IconButton size="xs"`와 아이콘을 조합하고, text action은 Ghost 형태의 버튼을 전달합니다.
+
+### `rightActionType`
+
+- type: `'icon' | 'text'`
+- required: `false`
+- default: `'icon'`
+- description: 오른쪽 액션의 시각 크기에 맞는 배치 규칙을 선택합니다. 실제 아이콘, 텍스트, click handler는 `rightAction`이 소유합니다.
+
+### `elevated`
+
+- type: `boolean`
+- required: `false`
+- default: `true`
+- description: `false`이면 기본 `shadow-header` elevation을 제거합니다.
 
 ### `variant`
 
@@ -133,10 +134,10 @@ Header
 - default: `'center'`
 - description: title layout과 높이를 결정합니다.
 
-| variant      | height                         | title layout                         | title typography    | 주요 용도                                 |
-| ------------ | ------------------------------ | ------------------------------------ | ------------------- | ----------------------------------------- |
-| `center`     | `75px`, `80px` with `subtitle` | 중앙 정렬, single-line 기본          | `typo-sub-header-1` | 일반 페이지 topbar, 약관 상세 topbar      |
-| `largeTitle` | `97px`                         | action 사이 가용 영역에서 left align | `typo-header-2`     | 긴 식당명처럼 2줄까지 허용되는 상세 title |
+| variant      | height | title layout                               | title typography    | 주요 용도                          |
+| ------------ | ------ | ------------------------------------------ | ------------------- | ---------------------------------- |
+| `center`     | `75px` | 중앙 정렬, single-line                     | `typo-sub-header-1` | 일반 페이지와 subtitle 포함 topbar |
+| `largeTitle` | `77px` | action 사이 272px 영역에서 left align, 1줄 | `typo-header-2`     | 긴 식당명을 보여주는 상세 title    |
 
 ### `className`
 
@@ -154,11 +155,14 @@ Header
 
 ```tsx
 type HeaderVariant = 'center' | 'largeTitle'
+type HeaderRightActionType = 'icon' | 'text'
 
 type HeaderBaseProps = {
   title: React.ReactNode
   leftAction?: React.ReactNode
   rightAction?: React.ReactNode
+  rightActionType?: HeaderRightActionType
+  elevated?: boolean
   className?: string
   contentClassName?: string
 }
@@ -197,9 +201,10 @@ Recommended usage:
 ## States
 
 - default: title만 있거나 left/right action이 선택적으로 있는 상태
-- with right action: 공유처럼 오른쪽 액션이 있는 상태
+- with icon action: 공유처럼 오른쪽 icon action이 있는 상태
+- with text action: 저장처럼 오른쪽 text action이 있고 elevation이 없는 상태
 - subtitle: `center` variant에서 title 아래 보조 텍스트가 있는 상태
-- largeTitle: 긴 title을 2줄까지 보여주는 상태
+- largeTitle: 긴 title을 한 줄 말줄임으로 보여주는 상태
 
 v1에서는 `largeTitle`과 `subtitle` 조합, disabled, loading, selected, invalid/error 상태를 `Header`가 직접 소유하지 않습니다. 각 action의 disabled/loading은 action slot에 전달되는 `IconButton`이 소유합니다.
 
@@ -208,11 +213,13 @@ v1에서는 `largeTitle`과 `subtitle` 조합, disabled, loading, selected, inva
 1. `title`을 Header의 주요 텍스트로 렌더링합니다.
 2. `leftAction`이 있으면 왼쪽 action slot에 렌더링합니다.
 3. `rightAction`이 있으면 오른쪽 action slot에 렌더링합니다.
-4. `variant="center"`에서 표시 가능한 `subtitle`이 있으면 Header 높이를 `80px`로 확장하고 title 아래 보조 텍스트로 렌더링합니다.
+4. `variant="center"`에서 표시 가능한 `subtitle`이 있으면 `75px` 높이를 유지하고 title 아래 보조 텍스트로 렌더링합니다.
 5. `variant="center"`에서는 title이 가운데 정렬됩니다.
-6. `variant="largeTitle"`에서는 title이 action 사이 content 영역에서 왼쪽 정렬되고 2줄까지 허용됩니다.
-7. `Header`는 action click handler를 직접 만들지 않습니다. 모든 interaction은 slot에 전달된 요소가 소유합니다.
-8. `Header`는 safe area, fixed/sticky, route navigation을 직접 처리하지 않습니다.
+6. `rightActionType="text"`이고 `rightAction`이 있으면 Figma의 `45px x 35px` text action을 위한 `45px x 39px` 오른쪽 slot을 사용하고, 중앙 title 영역은 양쪽 `57px` inset으로 action과 겹치지 않게 합니다.
+7. `variant="largeTitle"`에서는 title이 action 사이 content 영역에서 왼쪽 정렬되고 한 줄을 넘으면 말줄임 처리됩니다.
+8. `elevated={false}`이면 기본 Header shadow를 제거합니다.
+9. `Header`는 action click handler를 직접 만들지 않습니다. 모든 interaction은 slot에 전달된 요소가 소유합니다.
+10. `Header`는 safe area, fixed/sticky, route navigation을 직접 처리하지 않습니다.
 
 ## Styling
 
@@ -222,21 +229,23 @@ v1에서는 `largeTitle`과 `subtitle` 조합, disabled, loading, selected, inva
 - width: `w-full`; no fixed `393px`/`394px` component width
 - visual reference: Figma mobile frame `393-394px`
 - default height: `75px`
-- subtitle height: `80px`
-- large title height: `97px`
+- subtitle height: `75px`
+- large title height: `77px`
 - default padding: `pt-[33px]`, `pb-[18px]`, `pl-[13px]`, `pr-5`
 - large title padding: `pt-[33px]`, `pb-3`, `pl-[13px]`, `pr-5`
 - action visual size: `24px x 24px`, use `IconButton size="xs"`
+- text action position: `top 26px`, `right 12px`, `45px x 39px` alignment area
+- center title inset with text action: `57px` on both sides
 - title color: `text-primary-200`
 - default title typography: `typo-sub-header-1`
 - large title typography: `typo-header-2`
-- subtitle typography: `typo-caption-2`
+- subtitle typography: `typo-caption-2` with `18px` line-height
 - subtitle color: `text-primary-200`
-- large title overflow: `line-clamp-2` or equivalent 2-line clamp
+- large title overflow: single-line `truncate`
 - safe area: HDS에서 적용하지 않고 App Shell에서 한 번만 처리합니다.
 - fixed/sticky: HDS에서 결정하지 않습니다.
 
-`13px`, `33px`, `75px`, `80px`, `97px`는 Figma topbar와 직접 대응되는 값이므로 v1에서는 arbitrary value로 유지합니다. 같은 값이 여러 topbar/header 계열에서 반복되고 token 기준이 확정되면 spacing/height token 승격을 검토합니다.
+`12px`, `13px`, `26px`, `33px`, `39px`, `45px`, `57px`, `75px`, `77px`는 Figma Navigation Bar와 직접 대응되는 값이므로 arbitrary value로 유지합니다. 같은 값이 여러 topbar/header 계열에서 반복되고 token 기준이 확정되면 spacing/height token 승격을 검토합니다.
 
 Header elevation은 HDS token `shadow-header`로 관리합니다. Header를 사용하는 페이지는 기본 elevation과 중복되는 `border-b`를 추가하지 않습니다.
 
@@ -253,9 +262,11 @@ Header elevation은 HDS token `shadow-header`로 관리합니다. Header를 사�
 
 - [x] Default: center title + back action
 - [x] WithRightAction: center title + back/share action
+- [x] WithTextAction: center title + text action, no elevation
+- [x] TextActionOverflow: narrow viewport에서 long title + text action overflow
 - [x] TitleOnly: title만 있는 topbar
 - [x] Subtitle: terms detail처럼 subtitle이 있는 topbar
-- [x] LargeTitle: 긴 식당명 2줄 title
+- [x] LargeTitle: 긴 식당명 single-line overflow
 
 v1에서 search header, sticky header, transparent header, `largeTitle` + `subtitle` 조합, loading/disabled/error 상태는 지원하지 않습니다.
 
@@ -264,6 +275,7 @@ v1에서 search header, sticky header, transparent header, `largeTitle` + `subti
 - [x] `Header` value export
 - [x] `HeaderProps` type export
 - [x] `HeaderVariant` type export
+- [x] `HeaderRightActionType` type export
 - [x] no private helper export
 
 ## HDS가 가지면 안 되는 것
